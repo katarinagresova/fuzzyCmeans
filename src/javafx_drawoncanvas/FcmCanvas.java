@@ -5,7 +5,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import kmeans.Point;
+import kmeans.WeightsMatrix;
+
+import java.util.List;
 
 public class FcmCanvas extends Canvas {
 
@@ -53,5 +57,24 @@ public class FcmCanvas extends Canvas {
     public void drawPoint(Point point, Color color) {
         graphicsContext.setFill(color);
         graphicsContext.fillOval(point.getX() - point.getR(), point.getY() - point.getR(), 2*point.getR(), 2*point.getR());
+    }
+
+    public void drawCluster() {
+
+    }
+
+    public void drawCluster(WeightsMatrix partition, List<Point> points) {
+
+      /*  for (int clusterId = 0; clusterId < partition.getNumRows(); clusterId++) {
+
+        }
+
+
+        graphicsContext.setFill(Color.BLACK);
+        graphicsContext.setStroke(Color.BLACK);
+        double[] x = {100, 120, 120, 100, 80, 80};
+        double[] y = {0, 20, 40, 60, 80, 100};
+        graphicsContext.fillPolygon(new double[]{10, 40, 10, 40},
+                new double[]{210, 210, 240, 240}, 4);*/
     }
 }

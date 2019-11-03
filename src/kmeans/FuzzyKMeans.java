@@ -1,5 +1,8 @@
 package kmeans;
 
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,8 @@ public class FuzzyKMeans {
     /** Fuzziness factor */
     private double fuzziness;
     private double epsilon;
+    private int maxIterations;
+    private int currentIteration;
 
     private List<Point> points;
     private List<Point> centers;
@@ -26,12 +31,14 @@ public class FuzzyKMeans {
         // ak bol zadany len pocet centroidov, tak sa asi inicializuje nahodne. Ak mam prednastavene centroidy, tak to mozem inicializovat rovno vypocitanim prislusnosti
         this.partition = new WeightsMatrix(numOfClusters, points.size());
         initMissingParameters();
-        this.initialized = false;
+        oldPartition = this.partition.update(fuzziness, points, centers);
+        this.currentIteration = 0;
     }
 
-    public FuzzyKMeans(List<Point> points, List<Point> centers, double fuzziness) {
+    public FuzzyKMeans(List<Point> points, List<Point> centers, double fuzziness, double epsilon) {
         this(points, centers);
         this.fuzziness = fuzziness;
+        this.epsilon = epsilon;
     }
 
     public void execute() {
@@ -41,11 +48,9 @@ public class FuzzyKMeans {
     }
 
     public void makeStep() {
-        if (! initialized) {
-            this.partition.update(fuzziness, points, centers);
-        }
         updateCentroids();
         oldPartition = this.partition.update(fuzziness, points, centers);
+        currentIteration++;
     }
 
     private boolean endCondition() {
@@ -61,7 +66,7 @@ public class FuzzyKMeans {
 
             sum += WeightsMatrix.euclideanDistance(matrixUCol, oldMatrixUCol);
         }
-        return (sum > this.epsilon);
+        return (sum < this.epsilon) && this.currentIteration < this.maxIterations;
     }
 
 
@@ -93,9 +98,9 @@ public class FuzzyKMeans {
      *
      */
     private void initMissingParameters() {
-        /*if (maxIterations == 0) {
-            maxIterations = 10;
-        }*/
+        if (maxIterations == 0) {
+            maxIterations = 100;
+        }
         if (fuzziness == 0) {
             fuzziness = 2;
         }
@@ -107,4 +112,5 @@ public class FuzzyKMeans {
     public List<Point> getCenters() {
         return this.centers;
     }
+
 }

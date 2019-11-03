@@ -66,7 +66,7 @@ public final class WeightsMatrix {
                 double dik = euclideanDistance(points.get(col), centers.get(line));
                 if(dik != 0.0){
                     for(int s = 0; s < centers.size(); s++){
-                        double dsk = euclideanDistance(points.get(col), points.get(s));
+                        double dsk = euclideanDistance(points.get(col), centers.get(s));
                         double ratio = Math.pow((dik/dsk), exponent);
                         denominator += ratio;
                     }
