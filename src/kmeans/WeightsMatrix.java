@@ -46,27 +46,27 @@ public final class WeightsMatrix {
     }
 
     /**
-     *
-     * @param fuziness
-     * @param points
-     * @param centers
+     * Computes new partition values
+     * @param fuzziness fuzziness coefficient
+     * @param points    points that are clustered
+     * @param centers   centers of clusters
      * @return          old matrix
      */
-    public WeightsMatrix update(double fuziness, List<Point> points, List<Point> centers) {
+    public WeightsMatrix update(double fuzziness, List<Point> points, List<Point> centers) {
 
         WeightsMatrix oldMatrix = new WeightsMatrix(this);
 
-        double exponent = 2.0 / (fuziness - 1);
+        double exponent = 2.0 / (fuzziness - 1);
         /* loop over clusters */
         for(int line = 0; line < centers.size(); line++){
             /* loop over features */
             for(int col = 0; col < points.size(); col++){
                 double denominator = 0.0;
                 /* dik = d(xk - vi) */
-                double dik = euclideanDistance(points.get(col), centers.get(line));
+                double dik = Point.euclideanDistance(points.get(col), centers.get(line));
                 if(dik != 0.0){
                     for(int s = 0; s < centers.size(); s++){
-                        double dsk = euclideanDistance(points.get(col), centers.get(s));
+                        double dsk = Point.euclideanDistance(points.get(col), centers.get(s));
                         double ratio = Math.pow((dik/dsk), exponent);
                         denominator += ratio;
                     }
@@ -78,32 +78,5 @@ public final class WeightsMatrix {
         }
 
         return oldMatrix;
-    }
-
-    /**
-     * Compute euclidian distance
-     *
-     * @param a
-     * @param b
-     * @return Euclidian distance between two points
-     */
-    public static double euclideanDistance(Point a, Point b) {
-        double sum = 0.0;
-        sum += Math.pow(a.getX() - b.getX(), 2);
-        sum += Math.pow(a.getY() - b.getY(), 2);
-        return Math.sqrt(sum);
-    }
-
-    public static double euclideanDistance(double[] a, double[] b) {
-        if (a.length != b.length) {
-            throw new IllegalArgumentException("The dimensions have to be equal!");
-        }
-
-        double sum = 0.0;
-        for (int i = 0; i < a.length; i++) {
-            sum += Math.pow(a[i] - b[i], 2);
-        }
-
-        return Math.sqrt(sum);
     }
 }

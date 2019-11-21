@@ -1,17 +1,8 @@
-package javafx_drawoncanvas;
+package gui;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import kmeans.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FcmApplication extends Application {
 
@@ -21,7 +12,7 @@ public class FcmApplication extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Fuzzy C-Mean Classification");
+        this.primaryStage.setTitle("Fuzzy C-Mean");
 
         BorderPane initBorder = new BorderPane();
         this.demoScene = new DemoScene(initBorder, 1300, 700);
@@ -29,7 +20,6 @@ public class FcmApplication extends Application {
         this.primaryStage.setScene(this.demoScene);
         this.primaryStage.show();
     }
-
 
 
     public static void main(String[] args) {

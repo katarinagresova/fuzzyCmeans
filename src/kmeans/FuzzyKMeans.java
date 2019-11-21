@@ -1,16 +1,11 @@
 package kmeans;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class FuzzyKMeans {
 
     private int numOfClusters;
-    //private int maxIterations;
-    /** Fuzziness factor */
     private double fuzziness;
     private double epsilon;
     private int maxIterations;
@@ -22,13 +17,10 @@ public class FuzzyKMeans {
     private WeightsMatrix partition;
     private WeightsMatrix oldPartition;
 
-    private boolean initialized;
-
     public FuzzyKMeans(List<Point> points, List<Point> centers) {
         this.points = points;
         this.centers = centers;
         this.numOfClusters = centers.size();
-        // ak bol zadany len pocet centroidov, tak sa asi inicializuje nahodne. Ak mam prednastavene centroidy, tak to mozem inicializovat rovno vypocitanim prislusnosti
         this.partition = new WeightsMatrix(numOfClusters, points.size());
         initMissingParameters();
         oldPartition = this.partition.update(fuzziness, points, centers);
@@ -39,6 +31,16 @@ public class FuzzyKMeans {
         this(points, centers);
         this.fuzziness = fuzziness;
         this.epsilon = epsilon;
+    }
+
+    public FuzzyKMeans(List<Point> points, int numOfClusters, double fuzziness, double epsilon) {
+        this.centers = generateRandomCenters(numOfClusters);
+        this.points = points;
+        this.numOfClusters = centers.size();
+        this.partition = new WeightsMatrix(numOfClusters, points.size());
+        initMissingParameters();
+        oldPartition = this.partition.update(fuzziness, points, centers);
+        this.currentIteration = 0;
     }
 
     public void execute() {
@@ -64,7 +66,7 @@ public class FuzzyKMeans {
                 oldMatrixUCol[col] = this.oldPartition.valueAt(line, col);
             }
 
-            sum += WeightsMatrix.euclideanDistance(matrixUCol, oldMatrixUCol);
+            sum += Point.euclideanDistance(matrixUCol, oldMatrixUCol);
         }
         return (sum < this.epsilon) && this.currentIteration < this.maxIterations;
     }
@@ -87,15 +89,15 @@ public class FuzzyKMeans {
             }
 
             /* Create the new centroid */
-            Point centroid = new Point(sumX/amount, sumY/amount);
+            Point centroid = new Point(sumX/amount, sumY/amount, 6);
             list.add(centroid);
         }
         /* Update list of centroids */
         this.centers = list;
     }
 
-    /** There is some possibility, that some parameters will not be set in gui.
-     *
+    /**
+     * Check that all needed parameters are set or set them default values
      */
     private void initMissingParameters() {
         if (maxIterations == 0) {
@@ -113,4 +115,24 @@ public class FuzzyKMeans {
         return this.centers;
     }
 
+    private List<Point> generateRandomCenters(int numOfClusters) {
+
+        //maximum number
+        int min = 0;
+        //minimum number
+        int max = 700;
+
+        List<Point> centers = new ArrayList<>();
+        for (int index = 0; index < numOfClusters; index++) {
+            centers.add(new Point(min + Math.random() * (max - min), min + Math.random() * (max - min), 6));
+        }
+
+        return centers;
+    }
+
+    public WeightsMatrix getPartition() {
+        return this.partition;
+    }
+
 }
+
